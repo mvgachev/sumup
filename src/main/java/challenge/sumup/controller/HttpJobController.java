@@ -13,7 +13,7 @@ import challenge.sumup.model.TaskResponse;
 import challenge.sumup.service.TaskService;
 
 @RestController()
-@RequestMapping("/execute")
+@RequestMapping("/job")
 public class HttpJobController {
 
     private final TaskService taskService;
@@ -31,10 +31,5 @@ public class HttpJobController {
     public String executeTaskReturnBash(@RequestBody Job job) {
         List<TaskResponse> taskResponseList = taskService.getSortedTasks(job.getTasks());
         return TaskConverter.getListOfCommands(taskResponseList);
-    }
-
-    @RequestMapping("/home")
-    public String helloPage() {
-        return "hello";
     }
 }

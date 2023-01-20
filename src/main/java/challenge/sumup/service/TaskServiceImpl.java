@@ -23,21 +23,23 @@ public class TaskServiceImpl implements TaskService{
             storeTasks(taskRequestList);
             for (TaskRequest currentTaskRequest : taskRequestList) {
                 if (availableTasks.containsValue(currentTaskRequest)) {
-                    getCommandList(currentTaskRequest, taskResponseList);
+                    collectTasks(currentTaskRequest, taskResponseList);
                 }
             }
         }
         return taskResponseList;
     }
 
-    private void getCommandList(TaskRequest currentTaskRequest, List<TaskResponse> taskResponseList) {
+    private void collectTasks(TaskRequest currentTaskRequest, List<TaskResponse> taskResponseList) {
+        //Check if task can be executed or requires another one to be executed first
         if (currentTaskRequest.getRequires() != null && !currentTaskRequest.getRequires().isEmpty()) {
             for (String require : currentTaskRequest.getRequires()) {
                 if (availableTasks.containsKey(require)) {
-                    getCommandList(availableTasks.get(require), taskResponseList);
+                    collectTasks(availableTasks.get(require), taskResponseList);
                 }
             }
         }
+        //Add the task to the list
         taskResponseList.add(TaskConverter.convertTaskRequestToResponse(currentTaskRequest));
         availableTasks.remove(currentTaskRequest.getName());
     }
